@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma APEXMIND - Autenticación</title>
+    <!-- FontAwesome para el icono de la casa y papelera -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0f141c;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barra de navegación superior */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background-color: #0f141c;
+            border-bottom: 1px solid #1e2638;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .brand i {
+            color: #d4a359;
+            font-size: 1.2rem;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .brand-text span:first-child {
+            font-size: 1.1rem;
+            color: #ffffff;
+        }
+
+        .brand-text span:last-child {
+            font-size: 0.65rem;
+            color: #8a94a6;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: #8a94a6;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-nav-outline {
+            border: 1px solid #3a475d;
+            background: transparent;
+            color: #ffffff;
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .btn-nav-solid {
+            background-color: #c99c52;
+            border: none;
+            color: #0f141c;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        /* Contenedor central */
+        .main-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* Tarjeta de Login/Registro */
+        .auth-card {
+            background-color: #171d27;
+            border: 1px solid #232c3d;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .icon-header {
+            color: #d4a359;
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+        }
+
+        .auth-card h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .auth-card p.subtitle {
+            font-size: 0.8rem;
+            color: #616e85;
+            margin-bottom: 20px;
+        }
+
+        /* Pestañas (Tabs) */
+        .tabs-container {
+            display: flex;
+            background-color: #121721;
+            padding: 3px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 8px 0;
+            border: none;
+            background: transparent;
+            color: #8a94a6;
+            font-size: 0.85rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background-color: #c99c52;
+            color: #0f141c;
+            font-weight: 600;
+        }
+
+        /* Formularios e Inputs */
+        .form-group {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: #616e85;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: #121721;
+            border: 1px solid #232c3d;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: #c99c52;
+        }
+
+        /* Botones Principales */
+        .btn-submit {
+            width: 100%;
+            padding: 10px;
+            background-color: #c99c52;
+            border: none;
+            border-radius: 4px;
+            color: #0f141c;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        .btn-submit:hover {
+            background-color: #d4a359;
+        }
+
+        /* Ocultar secciones */
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        /* Lista de Usuarios Registrados */
+        .users-panel {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #232c3d;
+            text-align: left;
+        }
+
+        .users-panel h3 {
+            font-size: 0.85rem;
+            color: #c99c52;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .user-list {
+            list-style: none;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #121721;
+            padding: 8px 10px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            font-size: 0.75rem;
+            border: 1px solid #1e2638;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            margin-right: 8px;
+        }
+
+        .user-name {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .user-email {
+            color: #616e85;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .btn-delete {
+            background: transparent;
+            border: none;
+            color: #ff5555;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .btn-delete:hover {
+            color: #ff2222;
+        }
+
+        .session-status {
+            font-size: 0.75rem;
+            color: #4caf50;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-house"></i>
+            <div class="brand-text">
+                <span>APEXMIND</span>
+                <span>INMOBILIARIA</span>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="#">Inicio</a>
+            <a href="#">Catálogo</a>
+            <a href="#">Panel Agente</a>
+        </div>
+        <div class="nav-buttons" id="navButtonsContainer">
+            <button class="btn-nav-outline" onclick="switchTab('login')">Iniciar sesión</button>
+            <button class="btn-nav-solid" onclick="switchTab('registro')">Registrarse</button>
+        </div>
+    </nav>
+
+    <!-- Contenido Central -->
+    <div class="main-container">
+        <div class="auth-card">
+            <div class="icon-header">
+                <i class="fa-solid fa-house"></i>
+            </div>
+            <h2>Plataforma APEXMIND</h2>
+            <p class="subtitle">Ingresa o regístrate para gestionar tus propiedades</p>
+            <div id="sessionBadge" class="session-status"></div>
+
+            <!-- Pestañas -->
+            <div class="tabs-container">
+                <button id="tab-login-btn" class="tab-btn active" onclick="switchTab('login')">Iniciar Sesión</button>
+                <button id="tab-registro-btn" class="tab-btn" onclick="switchTab('registro')">Registrarse</button>
+            </div>
+
+            <!-- Formulario 1: Iniciar Sesión -->
+            <div id="section-login" class="form-section active">
+                <form id="formLogin" onsubmit="ejecutarLogin(event)">
+                    <div class="form-group">
+                        <label>Correo electrónico</label>
+                        <input type="email" id="loginEmail" class="form-control" value="daniel@apexmind.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="loginPass" class="form-control" value="123456" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Ingresar al Sistema</button>
+                </form>
+            </div>
+
+            <!-- Formulario 2: Registrarse -->
+            <div id="section-registro" class="form-section">
+                <form id="formRegistro" onsubmit="ejecutarRegistro(event)">
+                    <div class="form-group">
+                        <label>Nombre completo</label>
+                        <input type="text" id="regNombre" class="form-control" placeholder="Ej: Daniel Montañez" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo electrónico</label>
+                        <input type="email" id="regEmail" class="form-control" placeholder="tu@correo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" id="regPass" class="form-control" placeholder="******" minlength="6" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Crear Cuenta Agente</button>
+                </form>
+            </div>
+
+            <!-- Panel de Gestión de Usuarios Registrados -->
+            <div class="users-panel">
+                <h3>Usuarios Registrados</h3>
+                <ul id="listaUsuarios" class="user-list">
+                    <!-- Se renderiza dinámicamente con JS -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lógica de Autenticación y Administración -->
+    <script>
+        // Alternar visualmente entre las pestañas
+        function switchTab(tab) {
+            const btnLogin = document.getElementById('tab-login-btn');
+            const btnRegistro = document.getElementById('tab-registro-btn');
+            const secLogin = document.getElementById('section-login');
+            const secRegistro = document.getElementById('section-registro');
+
+            if (tab === 'login') {
+                btnLogin.classList.add('active');
+                btnRegistro.classList.remove('active');
+                secLogin.classList.add('active');
+                secRegistro.classList.remove('active');
+            } else {
+                btnRegistro.classList.add('active');
+                btnLogin.classList.remove('active');
+                secRegistro.classList.add('active');
+                secLogin.classList.remove('active');
+            }
+        }
+
+        // Obtener la lista de usuarios desde localStorage
+        function obtenerUsuarios() {
+            const data = localStorage.getItem('usuariosApex');
+            if (!data) {
+                const iniciales = [
+                    { id: 1, nombre: "Daniel Montañez", email: "daniel@apexmind.com", pass: "123456" }
+                ];
+                localStorage.setItem('usuariosApex', JSON.stringify(iniciales));
+                return iniciales;
+            }
+            return JSON.parse(data);
+        }
+
+        // Renderizar la lista de usuarios en la interfaz
+        function renderizarUsuarios() {
+            const usuarios = obtenerUsuarios();
+            const lista = document.getElementById('listaUsuarios');
+            const sessionBadge = document.getElementById('sessionBadge');
+            const usuarioActivo = JSON.parse(localStorage.getItem('usuarioSesionApex'));
+
+            lista.innerHTML = '';
+
+            if (usuarioActivo) {
+                sessionBadge.innerText = `● Sesión activa: ${usuarioActivo.nombre}`;
+            } else {
+                sessionBadge.innerText = '';
+            }
+
+            if (usuarios.length === 0) {
+                lista.innerHTML = '<li style="font-size:0.75rem; color:#616e85;">No hay usuarios registrados.</li>';
+                return;
+            }
+
+            usuarios.forEach(user => {
+                const li = document.createElement('li');
+                li.className = 'user-item';
+                li.innerHTML = `
+                    <div class="user-info">
+                        <span class="user-name">${user.nombre}</span>
+                        <span class="user-email">${user.email}</span>
+                    </div>
+                    <button class="btn-delete" onclick="eliminarUsuario(${user.id})" title="Eliminar usuario">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                `;
+                lista.appendChild(li);
+            });
+        }
+
+        // Eliminar usuario seleccionado
+        function eliminarUsuario(id) {
+            let usuarios = obtenerUsuarios();
+            usuarios = usuarios.filter(u => u.id !== id);
+            localStorage.setItem('usuariosApex', JSON.stringify(usuarios));
+
+            // Si el usuario eliminado tenía la sesión activa, cerrarla
+            const usuarioActivo = JSON.parse(localStorage.getItem('usuarioSesionApex'));
+            if (usuarioActivo && usuarioActivo.id === id) {
+                localStorage.removeItem('usuarioSesionApex');
+            }
+
+            renderizarUsuarios();
+        }
+
+        // Iniciar Sesión
+        function ejecutarLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const pass = document.getElementById('loginPass').value.trim();
+            const usuarios = obtenerUsuarios();
+
+            const usuarioValido = usuarios.find(u => u.email === email && u.pass === pass);
+
+            if (usuarioValido) {
+                localStorage.setItem('usuarioSesionApex', JSON.stringify(usuarioValido));
+                alert(`¡Bienvenido/a de nuevo, ${usuarioValido.nombre}!`);
+                renderizarUsuarios();
+            } else {
+                alert("Correo o contraseña incorrectos.");
+            }
+        }
+
+        // Registrar Usuario
+        function ejecutarRegistro(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('regNombre').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+            const pass = document.getElementById('regPass').value.trim();
+
+            let usuarios = obtenerUsuarios();
+
+            if (usuarios.find(u => u.email === email)) {
+                alert("Este correo ya está registrado.");
+                return;
+            }
+
+            const nuevoUsuario = { id: Date.now(), nombre, email, pass };
+            usuarios.push(nuevoUsuario);
+
+            localStorage.setItem('usuariosApex', JSON.stringify(usuarios));
+            localStorage.setItem('usuarioSesionApex', JSON.stringify(nuevoUsuario));
+
+            alert(`¡Cuenta creada con éxito! Bienvenido/a ${nombre}`);
+            e.target.reset();
+            switchTab('login');
+            renderizarUsuarios();
+        }
+
+        // Inicialización al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarUsuarios();
+        });
+    </script>
+</body>
+</html>
